@@ -62,6 +62,12 @@ public class Transaccion implements Comparable<Transaccion>{
 		// TODO Auto-generated method stub
 		return this.getId().compareTo(o.getId());
 	}
+
+	@Override
+	public String toString() {
+		return "Transaccion [id=" + id + ", motivo=" + motivo + ", cuentaOrigen=" + cuentaOrigen + ", cuentaDestino="
+				+ cuentaDestino + ", monto=" + monto + "]";
+	}
 	
 	
 }

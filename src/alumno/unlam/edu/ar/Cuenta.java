@@ -35,6 +35,11 @@ public class Cuenta {
 			throw new SaldoInsuficienteException("No dispone de saldo suficiente para realizar esta operación");
 		}
 	}
+
+	@Override
+	public String toString() {
+		return "Cuenta [cbu=" + cbu + "]";
+	}
 	
 	 
 }
