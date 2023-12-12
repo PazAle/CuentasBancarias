@@ -28,14 +28,16 @@ public class CajaDeAhorro extends Cuenta {
 	}
 
 	@Override
-	public void extraerDinero(Double monto) throws SaldoInsuficienteException {
+	public Boolean extraerDinero(Double monto) throws SaldoInsuficienteException {
 		Double saldoActual = this.getSaldo();
 		Integer cantidadDeExtracciones = this.cantidadDeExtracciones;
 		Double montoConAdicional = monto + this.getCostoAdicional();
+		Boolean sePudo = false;
 		if(cantidadDeExtracciones >= 5) {
 			if(saldoActual >= montoConAdicional) {
 				saldoActual -=montoConAdicional;
 				cantidadDeExtracciones++;
+				sePudo = true;
 			} else {
 				throw new SaldoInsuficienteException("No dispone de saldo suficiente para realizar esta operación");
 			}
@@ -44,6 +46,7 @@ public class CajaDeAhorro extends Cuenta {
 			if(saldoActual >= monto) {
 				saldoActual -=monto;
 				cantidadDeExtracciones++;
+				sePudo = true;
 			} else {
 				throw new SaldoInsuficienteException("No dispone de saldo suficiente para realizar esta operación");
 			}
@@ -51,6 +54,8 @@ public class CajaDeAhorro extends Cuenta {
 		
 		this.setCantidadDeExtracciones(cantidadDeExtracciones);
 		this.setSaldo(saldoActual);
+		
+		return sePudo;
 	}
 
 }

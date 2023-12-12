@@ -153,7 +153,7 @@ public class Test {
 		}
 		
 		List<Transaccion> transaccionesOrdenadas = new ArrayList<>(rio.getTransacciones());
-		System.out.println(rio.getTransacciones());
+		
 		Double saldoEsperado = 250.00;
 		Double saldoObtenido = ((CuentaCorriente)cuentaCorriente).getComisionAPagar();
 		
@@ -165,4 +165,64 @@ public class Test {
 		assertEquals(transaccionesOrdenadas.get(5).getId(), (Integer)6);
 	}
 
+	@org.junit.Test
+	public void queSePuedaTransferirDeUnaCuentaSueldoAUnaCuentaCorriente() {
+		Long cbu1 = 566777888235675638L, cbu2 =836777880935675638L;
+		Double saldo1 = 100000.00, saldo2 = 50000.00, descubierto = 10000.00;
+		
+		Banco rio = new Banco();
+		Cuenta cuentaSueldo = new CuentaSueldo(cbu2, saldo2);
+		Cuenta cuentaCorriente = new CuentaCorriente(cbu1, saldo1, descubierto);
+		
+		try {
+			rio.registrarCuenta(cuentaCorriente);
+			rio.registrarCuenta(cuentaSueldo);
+		} catch (CuentaRegistradaException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			rio.transferirDinero(cbu2, cbu1, 20000.00);
+			rio.extraerDinero(cbu1, 1000.00);
+			rio.extraerDinero(cbu1, 1000.00);
+			rio.extraerDinero(cbu1, 1000.00);
+			
+		} catch (CuentaInexistenteException | SaldoInsuficienteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Double saldoEsperado = 117000.00;
+		Double saldoObtenido = cuentaCorriente.getSaldo();
+
+		assertEquals(saldoEsperado, saldoObtenido);
+	}
+	
+	@org.junit.Test
+	public void queSePuedaIngresarDineroAUnaCuenta() {
+		Long cbu1 = 566777888235675638L, cbu2 =836777880935675638L;
+		Double saldo1 = 100000.00, saldo2 = 50000.00, descubierto = 10000.00;
+		
+		Banco rio = new Banco();
+		Cuenta cuentaSueldo = new CuentaSueldo(cbu2, saldo2);
+		Cuenta cuentaCorriente = new CuentaCorriente(cbu1, saldo1, descubierto);
+		
+		try {
+			rio.registrarCuenta(cuentaCorriente);
+			rio.registrarCuenta(cuentaSueldo);
+		} catch (CuentaRegistradaException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			rio.ingresarDinero(cbu1, 1000.00);
+			
+		} catch (CuentaInexistenteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Double saldoEsperado = 101000.00;
+		Double saldoObtenido = cuentaCorriente.getSaldo();
+
+		assertEquals(saldoEsperado, saldoObtenido);
+	}
 }

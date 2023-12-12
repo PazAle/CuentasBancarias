@@ -29,7 +29,7 @@ public class CuentaCorriente extends Cuenta {
 	}
 
 	@Override
-	public void extraerDinero(Double monto) throws SaldoInsuficienteException {
+	public Boolean extraerDinero(Double monto) throws SaldoInsuficienteException {
 		Double saldoActual = this.getSaldo();
 		Double descubierto = this.getDescubierto();
 		Double saldoTotal = saldoActual + descubierto;
@@ -47,9 +47,12 @@ public class CuentaCorriente extends Cuenta {
 			this.setSaldo(0.0);
 			this.setDescubierto(this.getDescubierto()-descubiertoUtilizado);
 			calcularComision(descubiertoUtilizado);
+			seExtrajo = true;
 		} else if(saldoTotal <= monto && !seExtrajo) {
 			throw new SaldoInsuficienteException("No cuenta con dinero suficiente para realizar la operación");
 		}
+		
+		return seExtrajo;
 	}
 
 	private void calcularComision(Double descubiertoUtilizado) {

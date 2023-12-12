@@ -54,11 +54,12 @@ public class Banco {
 
 	public void extraerDinero(Long cbu, Double monto) throws CuentaInexistenteException, SaldoInsuficienteException {
 		Cuenta cuenta = buscarCuentaPorCbu(cbu);
-		cuenta.extraerDinero(monto);
-		Integer idTransaccion = this.getTransacciones().size();
-		idTransaccion++;
-		registrarTransaccion(idTransaccion, Motivo.EXTRACCION, cuenta, monto);
-		
+		Boolean sePudoExtraer = cuenta.extraerDinero(monto);
+		if(sePudoExtraer) {
+			Integer idTransaccion = this.getTransacciones().size();
+			idTransaccion++;
+			registrarTransaccion(idTransaccion, Motivo.EXTRACCION, cuenta, monto);
+		}		
 	}
 
 	private void registrarTransaccion(Integer id, Motivo motivo, Cuenta cuenta, Double monto) {
@@ -78,6 +79,31 @@ public class Banco {
 		}
 		
 		return cuentaBuscada;
+	}
+
+	public void transferirDinero(Long cbuOrigen, Long cbuDestino, Double monto) throws CuentaInexistenteException, SaldoInsuficienteException {
+		Cuenta cuentaOrigen = buscarCuentaPorCbu(cbuOrigen);
+		Cuenta cuentaDestino = buscarCuentaPorCbu(cbuDestino);
+		
+		cuentaOrigen.transferir(cuentaOrigen, cuentaDestino, monto);
+		Integer idTransaccion = this.getTransacciones().size();
+		idTransaccion++;
+		registrarTransaccion(idTransaccion, Motivo.TRANSFERENCIA, cuentaOrigen, cuentaDestino, monto);
+		
+	}
+
+	private void registrarTransaccion(Integer id, Motivo motivo, Cuenta cuentaOrigen,
+			Cuenta cuentaDestino, Double monto) {
+		this.transacciones.add(new Transaccion(id, motivo, cuentaOrigen, cuentaDestino, monto));
+		
+	}
+
+	public void ingresarDinero(Long cbu, Double monto) throws CuentaInexistenteException {
+		Cuenta cuenta = buscarCuentaPorCbu(cbu);
+		cuenta.ingresarDinero(monto);
+		Integer idTransaccion = this.getTransacciones().size();
+		idTransaccion++;
+		registrarTransaccion(idTransaccion, Motivo.DEPOSITO, cuenta, monto);
 	}
 
 }
